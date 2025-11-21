@@ -6,13 +6,6 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-interface QuickLink {
-  id: string;
-  name: string;
-  url: string;
-  icon: string;
-}
-
 interface HistoryItem {
   id: string;
   title: string;
@@ -24,17 +17,6 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("home");
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
-
-  const quickLinks: QuickLink[] = [
-    { id: "1", name: "YouTube", url: "youtube.com", icon: "Youtube" },
-    { id: "2", name: "Gmail", url: "gmail.com", icon: "Mail" },
-    { id: "3", name: "Drive", url: "drive.google.com", icon: "HardDrive" },
-    { id: "4", name: "Maps", url: "maps.google.com", icon: "Map" },
-    { id: "5", name: "Photos", url: "photos.google.com", icon: "Image" },
-    { id: "6", name: "Calendar", url: "calendar.google.com", icon: "Calendar" },
-    { id: "7", name: "Docs", url: "docs.google.com", icon: "FileText" },
-    { id: "8", name: "Meet", url: "meet.google.com", icon: "Video" },
-  ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +38,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#D946EF] relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#16213e] relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.2),transparent_50%)]" />
       <div className="absolute top-20 left-20 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] animate-float" />
       <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] animate-float" style={{ animationDelay: '1.5s' }} />
@@ -106,18 +88,36 @@ const Index = () => {
                 </div>
               </form>
 
-              <div className="grid grid-cols-4 gap-4">
-                {quickLinks.map((link) => (
-                  <Card
-                    key={link.id}
-                    className="glass-effect glass-hover cursor-pointer p-6 flex flex-col items-center justify-center gap-3 border-white/10 hover:border-primary/50 transition-all duration-300 hover:scale-105"
-                  >
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                      <Icon name={link.icon as any} size={24} className="text-white" />
-                    </div>
-                    <span className="text-sm font-medium">{link.name}</span>
-                  </Card>
-                ))}
+              <div className="glass-effect rounded-2xl p-6">
+                <h2 className="text-xl font-bold mb-4">Недавние запросы</h2>
+                {historyItems.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+                    <Icon name="Search" size={48} className="mb-4 opacity-50" />
+                    <p className="text-base">Нет недавних запросов</p>
+                    <p className="text-sm">Ваши последние поисковые запросы появятся здесь</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                    {historyItems.slice(0, 5).map((item) => (
+                      <Card
+                        key={item.id}
+                        className="glass-effect glass-hover border-white/10 p-4 cursor-pointer"
+                        onClick={() => window.open(`https://${item.url}`, '_blank')}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                            <Icon name="Clock" size={20} className="text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-medium truncate">{item.title}</h3>
+                            <p className="text-sm text-muted-foreground truncate">{item.time}</p>
+                          </div>
+                          <Icon name="ExternalLink" size={16} className="text-muted-foreground flex-shrink-0" />
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </TabsContent>
